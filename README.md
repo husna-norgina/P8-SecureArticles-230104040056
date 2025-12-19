@@ -1,7 +1,6 @@
-# 🌐 Praktikum #8 — Web Service Engineering
+# 🌐 Praktikum 8 — Secure & Observable RESTful API (Express.js)
 
-Menerapkan **Secure & Observable RESTful CRUD API** pada Express.js dengan arsitektur modular dan praktik industrial backend modern.
-Project ini mencakup implementasi **JWT Authentication**, **Refresh Token**, **RBAC**, **Security Hardening**, serta **Observability (Logging, Correlation ID, Health Check)**.
+Praktikum ini membahas **pengembangan RESTful API yang aman dan terobservasi** menggunakan **Node.js dan Express.js**. API menerapkan **JWT Authentication**, **Refresh Token**, **Role-Based Access Control (RBAC)**, **CRUD Articles**, **Security Hardening**, serta **Observability** melalui logging, health check, dan dokumentasi Swagger.
 
 **Topik:** Secure & Observable RESTful API (Authentication, Authorization, Security, Observability)
 
@@ -9,239 +8,304 @@ Project ini mencakup implementasi **JWT Authentication**, **Refresh Token**, **R
 
 ## 🧑‍🎓 Informasi Mahasiswa
 
-| Informasi         | Data                                      |
-| ----------------- | ----------------------------------------- |
-| Mata Kuliah       | Web Service Engineering                   |
-| Dosen Pengampu    | Muhayat, M.IT                             |
-| Praktikum         | P8 - Secure & Observable RESTful CRUD API |
-| Nama Mahasiswa    | Husna Norgina                             |
-| NIM               | 230104040056                              |
-| Kelas             | TI23B                                     |
-| Tanggal Praktikum | 24-11-2025                                |
-
+| Informasi          | Data                                                             |
+|--------------------|------------------------------------------------------------------|
+| Mata Kuliah        | Web Service Engineering                                          |
+| Dosen Pengampu     | Muhayat, M.IT                                                    |
+| Praktikum / Proyek | P8 – Secure & Observable RESTful CRUD API                        |
+| Nama Mahasiswa     | Husna Norgina                                                    |
+| NIM                | 230104040056                                                     |
+| Kelas              | TI23B                                                            |
+| Repo GitHub        | https://github.com/husna-norgina/P8-SecureArticles-230104040056  |
+| Tanggal Praktikum  | 24-11-2025                                                       |                                                                                 
 ---
 
 ## 🎯 Tujuan Praktikum
 
-1. Merancang API CRUD sesuai 7 RESTful Principles secara konsisten (resource, method,
-   status code, HATEOAS ringan, stateless, caching, layered system).
-2. Mengimplementasikan JWT Authentication (register/login/refresh/logout) dengan
-   keamanan standar industri.
-3. Menerapkan role-based authorization (admin vs user).
-4. Melakukan hardening API: validation, rate limit, security headers, CORS, error
-   hygiene, env secrets, dsb.
-5. Membangun observability: structured logging + correlation-id + health/metrics
-   endpoint.
-6. Menyusun dokumentasi OpenAPI yang akurat, test-ready, dan bisa dipakai integrasi
-   lintas layanan.
+1. Menerapkan **JWT Authentication** (register, login, refresh, logout).
+2. Mengimplementasikan **Role-Based Access Control (RBAC)**.
+3. Membangun **CRUD Articles** sesuai prinsip RESTful.
+4. Menerapkan **security hardening** (Helmet, CORS, Rate Limit).
+5. Menyediakan **observability endpoint** (health & docs).
+6. Menyusun dokumentasi API yang rapi dan mudah diuji.
 
 ---
 
 ## 🛠 Tools & Environment
 
-### **Wajib:**
-
-* Node.js 18+ / 20 LTS  
-* Express.js  
-* MongoDB / PostgreSQL (pilih salah satu)  
-* JWT library (jsonwebtoken)  
-* bcrypt  
-* Joi / Zod / Express-validator (validation)  
-* Jest + Supertest  
-* OpenAPI + Spectral  
-* Postman / Insomnia  
-* GitHub Actions  
-
-### **Observability / Hardening (Advance Layer):**
-
-* pino / winston (structured logger)  
-* express-rate-limit  
-* helmet  
-* cors  
-* morgan → diganti structured log  
-* uuid / nanoid (correlation-id)  
-* swagger-ui-express (docs)  
-* optional: prom-client (metrics)  
+* Node.js 18+
+* Express.js
+* JSON Web Token (JWT)
+* bcrypt
+* Helmet
+* CORS
+* express-rate-limit
+* dotenv
+* Postman
+* Swagger UI
+* Git & GitHub
 
 ---
 
-## ⚙️ Struktur Project
+## 🧱 Arsitektur Sistem
 
-```
-src/
-├─ app.js
-├─ server.js
-├─ config/
-│   ├─ env.js
-│   └─ db.js
-├─ controllers/
-│   ├─ auth.controller.js
-|   ├─ articles.controller.js
-│   └─ system.controller.js
-├─ services/
-│   ├─ auth.service.js
-│   └─ articles.service.js
-├─ repositories/
-│   ├─ users.repo.js
-│   └─ articles.repo.js
-├─ routes/
-│   ├─ articles.routes.js
-|   ├─ auth.routes.js
-│   └─ system.routes.js
-├─ middlewares/
-│   ├─ auth.middleware.js
-│   ├─ role.middleware.js
-│   ├─ correlationId.middleware.js
-│   ├─ rateLimit.middleware.js
-│   ├─ validate.middleware.js
-│   ├─ error.middleware.js
-│   └─ notFound.middleware.js
-├─ utils/
-│   ├─ logger.js
-│   ├─ response.js
-│   ├─ jwt.js
-│   ├─ auth.validation.js
-│   ├─ articles.validation.js
-│   └─ articles.dto.js
-└─ docs/
-    └─ openapi.yaml
-```
+**Alur Sistem:**
+
+* Client (Postman / Browser)
+* API Server (Express.js)
+* Authentication & Authorization Middleware
+* Articles Controller
+* Data sementara (in-memory / database)
+* Response JSON ke client
+
+Arsitektur menggunakan pola **Client–Server** dengan struktur modular.
 
 ---
 
-## 🔐 Autentikasi & Autorisasi
-
-### **JWT Authentication**
-
-Menggunakan:
-
-* **Access Token** (kadaluarsa cepat)
-* **Refresh Token** (disimpan di DB, bisa dicabut)
-
-### **RBAC (Role-Based Access Control)**
-
-* **user** → hanya bisa mengelola artikelnya
-* **admin** → full access seluruh artikel
+## 🔁 Pengujian & Implementasi API
 
 ---
 
-## 🧩 Daftar Endpoint
+### 🔵 1. POST — Register User
 
-### 🛡️ **AUTH ENDPOINTS**
+| Method | Endpoint             | Keterangan         |
+| ------ | -------------------- | ------------------ |
+| POST   | `/api/auth/register` | Register user baru |
 
-| Method | Endpoint           | Auth         | Deskripsi                                 |
-| ------ | ------------------ | ------------ | ----------------------------------------- |
-| POST   | /api/auth/register | Public       | Register user baru (role: user/admin)     |
-| POST   | /api/auth/login    | Public       | Login → dapat accessToken + refreshToken  |
-| POST   | /api/auth/refresh  | Public       | Meminta accessToken baru via refreshToken |
-| POST   | /api/auth/logout   | Access Token | Logout & invalidate refreshToken          |
-| GET    | /api/auth/me       | Access Token | Mengambil profil user dari JWT            |
+**Hasil:**
 
----
+![Register User](evidence/1.%20post%20auth-register.png)
 
-### 📰 **ARTICLES ENDPOINTS (CRUD + RBAC)**
-
-| Method | Endpoint          | Auth         | Role        | Deskripsi                                 |
-| ------ | ----------------- | ------------ | ----------- | ----------------------------------------- |
-| GET    | /api/articles     | Public       | public      | List all articles + pagination + search   |
-| POST   | /api/articles     | Access Token | user/admin  | Create article (author otomatis dari JWT) |
-| PUT    | /api/articles/:id | Access Token | owner/admin | Update artikel                            |
-| DELETE | /api/articles/:id | Access Token | admin       | Hapus artikel                             |
+User berhasil didaftarkan.
+Server merespons status `201 Created`.
 
 ---
 
-### ⚙️ **SYSTEM & OBSERVABILITY ENDPOINTS**
+### 🔵 2. POST — Login User
 
-| Method | Endpoint | Auth   | Deskripsi             |
-| ------ | -------- | ------ | --------------------- |
-| GET    | /health  | Public | Cek status server     |
-| GET    | /docs    | Public | Swagger UI (API Docs) |
+| Method | Endpoint          | Keterangan |
+| ------ | ----------------- | ---------- |
+| POST   | `/api/auth/login` | Login user |
 
-> Semua hasil uji Postman disimpan di folder: `./evidence/`
+**Hasil:**
 
----
+![Login User](evidence/2.%20post%20auth-login.png)
 
-## 🔒 Security Hardening
-
-Fitur keamanan yang diterapkan pada API:
-
-* ✓ Helmet security headers
-* ✓ CORS whitelist domain
-* ✓ Rate limiting (terutama pada /auth/login)
-* ✓ Body validation menggunakan Joi
-* ✓ Sanitasi input dasar
-* ✓ Password hashing (bcrypt)
-* ✓ Tidak menampilkan pesan error internal ke client
+Login berhasil dan menghasilkan access token.
+Server merespons status `200 OK`.
 
 ---
 
-## 📊 Observability
+### 🔵 3. POST — Refresh Token
 
-### 1. **Structured Logging (Pino)**
+| Method | Endpoint            | Keterangan           |
+| ------ | ------------------- | -------------------- |
+| POST   | `/api/auth/refresh` | Refresh access token |
 
-Merekam informasi seperti:
+**Hasil:**
 
-* method, path, status code
-* duration
-* userId (jika login)
-* correlationId
+![Refresh Token](evidence/3.%20post%20auth-refresh.png)
 
-### 2. **Correlation ID**
-
-Setiap request diberi header otomatis:
-
-```
-x-correlation-id: <uuid>
-```
-
-### 3. **Health Check**
-
-```
-GET /health
-```
-
-Merespons status layanan, uptime, timestamp.
-
-### 4. **API Docs (Swagger UI)**
-
-```
-GET /docs
-```
-
-Dokumentasi berdasarkan OpenAPI 3.1.
+Token berhasil diperbarui.
+Server merespons status `200 OK`.
 
 ---
 
-## 📊 Analisis
+### 🔵 4. POST — Logout
 
-* API sudah memenuhi standar security modern.
-* Penggunaan JWT + refresh meningkatkan keamanan autentikasi.
-* Struktur modular memudahkan maintain dan scaling.
-* Logging + correlation-id memudahkan debugging dan tracing.
-* Dokumentasi OpenAPI membuat API mudah diintegrasikan.
-* Validasi input mencegah request berbahaya.
+| Method | Endpoint           | Keterangan  |
+| ------ | ------------------ | ----------- |
+| POST   | `/api/auth/logout` | Logout user |
+
+**Hasil:**
+
+![Logout](evidence/4.%20post%20auth-logout.png)
+
+User berhasil logout.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 5. GET — Profil User (JWT)
+
+| Method | Endpoint       | Keterangan            |
+| ------ | -------------- | --------------------- |
+| GET    | `/api/auth/me` | Ambil data user login |
+
+**Hasil:**
+
+![Auth Me](evidence/5.%20get%20auth-me.png)
+
+Profil user ditampilkan dari token JWT.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 6. GET — Ambil Semua Articles
+
+| Method | Endpoint        | Keterangan         |
+| ------ | --------------- | ------------------ |
+| GET    | `/api/articles` | List semua artikel |
+
+**Hasil:**
+
+![Get Articles](evidence/6.%20get%20articles.png)
+
+Menampilkan daftar artikel.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 7. POST — Tambah Article
+
+| Method | Endpoint        | Keterangan     |
+| ------ | --------------- | -------------- |
+| POST   | `/api/articles` | Tambah artikel |
+
+**Hasil:**
+
+![Post Articles](evidence/7.%20post%20articles.png)
+
+Artikel berhasil ditambahkan.
+Server merespons status `201 Created`.
+
+---
+
+### 🔵 8. POST — Register Admin
+
+| Method | Endpoint             | Keterangan     |
+| ------ | -------------------- | -------------- |
+| POST   | `/api/auth/register` | Register admin |
+
+**Hasil:**
+
+![Register Admin](evidence/8.%20post%20register-admin.png)
+
+Admin berhasil didaftarkan.
+Server merespons status `201 Created`.
+
+---
+
+### 🔵 9. POST — Login Admin
+
+| Method | Endpoint          | Keterangan  |
+| ------ | ----------------- | ----------- |
+| POST   | `/api/auth/login` | Login admin |
+
+**Hasil:**
+
+![Login Admin](evidence/9.%20post%20login-admin.png)
+
+Login admin berhasil.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 10. PUT — Update Article
+
+| Method | Endpoint             | Keterangan     |
+| ------ | -------------------- | -------------- |
+| PUT    | `/api/articles/{id}` | Update artikel |
+
+**Hasil:**
+
+![Update Article](evidence/10.%20put%20articles-id.png)
+
+Artikel berhasil diperbarui.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 11. DELETE — Hapus Article
+
+| Method | Endpoint             | Keterangan    |
+| ------ | -------------------- | ------------- |
+| DELETE | `/api/articles/{id}` | Hapus artikel |
+
+**Hasil:**
+
+![Delete Article](evidence/11.%20delete%20articles-id.png)
+
+Artikel berhasil dihapus.
+Server merespons status `204 No Content`.
+
+---
+
+### 🔵 12. GET — Health Check
+
+| Method | Endpoint  | Keterangan     |
+| ------ | --------- | -------------- |
+| GET    | `/health` | Cek status API |
+
+**Hasil:**
+
+![Health](evidence/12.%20get%20health.png)
+
+API berjalan normal.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 13. GET — API Docs (JSON)
+
+| Method | Endpoint | Keterangan   |
+| ------ | -------- | ------------ |
+| GET    | `/docs`  | OpenAPI JSON |
+
+**Hasil:**
+
+![Docs](evidence/13.%20get%20docs.png)
+
+Dokumentasi API tersedia.
+Server merespons status `200 OK`.
+
+---
+
+### 🔵 14. Swagger UI (Browser)
+
+**Hasil:**
+
+![Swagger UI](evidence/14.%20swagger%20UI_browser.png)
+
+Swagger UI menampilkan dokumentasi API secara interaktif.
+
+---
+
+## 📄 Laporan Praktikum 8
+
+[230104040056_Husna Norgina_P8.pdf](<evidence/230104040056_Husna Norgina_P8.pdf>)
+
+---
+
+> Semua screenshot hasil uji endpoint dan laporan praktikum disimpan pada folder:
+> 📂 `./evidence/`
+
+---
+
+## 📊 Analisis Praktikum
+
+* JWT Authentication dan Refresh Token berjalan dengan baik.
+* RBAC membatasi akses user dan admin.
+* CRUD Articles sesuai prinsip RESTful.
+* Middleware keamanan meningkatkan perlindungan API.
+* Observability membantu monitoring dan debugging.
+* Dokumentasi Swagger memudahkan pengujian API.
 
 ---
 
 ## ✅ Kesimpulan
 
-Praktikum 8 berhasil mengimplementasikan API yang **aman, terstruktur, observable, dan sesuai standar industri**. Seluruh fitur autentikasi, autorisasi, security, CRUD articles, validasi, dan dokumentasi berjalan dengan baik.
+Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa RESTful API berhasil diimplementasikan dengan fitur keamanan dan observability. Seluruh endpoint authentication, CRUD articles, dan system monitoring berjalan dengan baik dan sesuai konsep REST API. Praktikum ini memberikan pemahaman lanjutan mengenai pengembangan API yang aman, terstruktur, dan terdokumentasi.
 
 ---
 
-## 📌 Checklist Praktikum
+## 📌 Catatan
 
-* ✅ JWT Authentication
-* ✅ Refresh Token + revoke
-* ✅ RBAC (user/admin)
-* ✅ CRUD Articles
-* ✅ Helmet + CORS whitelist
-* ✅ Rate limiting
-* ✅ Request logging (Pino)
-* ✅ Correlation ID
-* ✅ Health check
-* ✅ Dokumentasi OpenAPI
-* ✅ Evidence Postman lengkap
-* ✅ Dokumentasi README.md selesai
+* Pengujian dilakukan menggunakan Postman.
+* Autentikasi menggunakan JWT.
+* API siap dikembangkan ke tahap production.
+* API dikembangkan untuk keperluan pembelajaran.
 
 ---
+
+📝 *Disusun oleh Husna Norgina (230104040056) — Praktikum 8 Web Service Engineering*
