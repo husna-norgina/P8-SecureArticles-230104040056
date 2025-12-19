@@ -303,7 +303,6 @@ Berdasarkan praktikum yang telah dilakukan, dapat disimpulkan bahwa RESTful API 
 
 * Pengujian dilakukan menggunakan Postman.
 * Autentikasi menggunakan JWT.
-* API siap dikembangkan ke tahap production.
 * API dikembangkan untuk keperluan pembelajaran.
 
 ---
