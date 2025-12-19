@@ -277,7 +277,7 @@ Swagger UI menampilkan dokumentasi API secara interaktif.
 
 ---
 
-> Semua screenshot hasil uji endpoint dan laporan praktikum disimpan pada folder:
+> Semua screenshot hasil uji endpoint dan laporan praktikum disimpan pada folder:  
 > 📂 `./evidence/`
 
 ---
